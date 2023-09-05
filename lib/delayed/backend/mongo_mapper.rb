@@ -29,7 +29,7 @@ module Delayed
         end
 
         def self.after_fork
-          ::MongoMapper.connection.connect
+          ::MongoMapper.connection.reconnect
         end
 
         def self.db_time_now
@@ -56,10 +56,10 @@ module Delayed
           ]
 
           begin
-            result = self.collection.find_and_modify(
-              :query  => conditions,
-              :sort   => [['locked_by', -1], ['priority', 1], ['run_at', 1]],
-              :update => {"$set" => {:locked_at => right_now, :locked_by => worker.name}}
+            result = self.collection.find_one_and_update(
+              conditions,
+              {"$set" => { locked_at: right_now, locked_by: worker.name } },
+              sort: { locked_by: -1, priority: 1, run_at: 1 }
             )
 
             # Return result as a MongoMapper document.
@@ -72,12 +72,17 @@ module Delayed
 
         # When a worker is exiting, make sure we don't have any locked jobs.
         def self.clear_locks!(worker_name)
-          self.collection.update({:locked_by => worker_name}, {"$set" => {:locked_at => nil, :locked_by => nil}}, :multi => true)
+          self.collection.update_many({:locked_by => worker_name}, {"$set" => {:locked_at => nil, :locked_by => nil}})
         end
 
         def reload(*args)
+          # Won't pass the `delayed_job` test suite without this:
+          original_error = @error
+
           reset
-          super
+          super.tap do
+            @error = original_error
+          end
         end
       end
     end

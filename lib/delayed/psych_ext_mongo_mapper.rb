@@ -1,7 +1,7 @@
-module Psych
-  module Visitors
+module Delayed
+  module PsychExt
     class ToRuby
-      def visit_Psych_Nodes_Mapping_with_klass(object)
+      def visit_Psych_Nodes_Mapping(object)
         return revive(Psych.load_tags[object.tag], object) if Psych.load_tags[object.tag]
 
         case object.tag
@@ -14,10 +14,9 @@ module Psych
             raise Delayed::DeserializationError
           end
         else
-          visit_Psych_Nodes_Mapping_without_klass(object)
+          super(object)
         end
       end
-      alias_method_chain :visit_Psych_Nodes_Mapping, :klass
     end
   end
 end
