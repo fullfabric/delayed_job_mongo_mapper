@@ -3,7 +3,7 @@
 Gem::Specification.new do |s|
   s.name              = 'delayed_job_mongo_mapper'
   s.summary           = "MongoMapper backend for delayed_job"
-  s.version           = '2.1.0'
+  s.version           = '2.1.1'
   s.authors           = ['Chris Gaffney', 'Brandon Keepers', 'Adnan Ali']
   s.email             = ['chris@collectiveidea.com', 'brandon@opensoul.com', 'adnan.ali@gmail.com']
   s.extra_rdoc_files  = ["LICENSE", "README.md"]
@@ -16,6 +16,6 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency      'mongo', '~> 2.16.0'
   s.add_runtime_dependency      'mongo_mapper', '~> 0.15.0'
   s.add_runtime_dependency      'delayed_job',  '~> 4.1.5'
-  s.add_runtime_dependency      'tzinfo',       '~> 1.1'
+  s.add_runtime_dependency      'tzinfo',       '>= 1.1'
   s.add_development_dependency  'rspec',        '>= 3.0'
 end
