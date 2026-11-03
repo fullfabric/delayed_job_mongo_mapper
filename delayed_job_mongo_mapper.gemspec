@@ -13,7 +13,7 @@ Gem::Specification.new do |s|
   s.require_paths     = ['lib']
   s.test_files        = Dir.glob('spec/**/*')
 
-  s.add_runtime_dependency      'mongo', '~> 2.16.0'
+  s.add_runtime_dependency      'mongo', '~> 2.16'
   s.add_runtime_dependency      'mongo_mapper', '~> 0.15.0'
   s.add_runtime_dependency      'delayed_job',  '~> 4.1.5'
   s.add_runtime_dependency      'tzinfo',       '>= 1.1'
