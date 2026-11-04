@@ -55,19 +55,15 @@ module Delayed
             { :locked_at => { '$lt' => (right_now - max_run_time) }}
           ]
 
-          begin
-            result = self.collection.find_one_and_update(
-              conditions,
-              {"$set" => { locked_at: right_now, locked_by: worker.name } },
-              sort: { locked_by: -1, priority: 1, run_at: 1 }
-            )
+          result = self.collection.find_one_and_update(
+            conditions,
+            {"$set" => { locked_at: right_now, locked_by: worker.name } },
+            sort: { locked_by: -1, priority: 1, run_at: 1 }
+          )
 
-            # Return result as a MongoMapper document.
-            # When MongoMapper starts supporting findAndModify, this extra step should no longer be necessary.
-            self.find(result["_id"]) unless result.nil?
-          rescue Mongo::OperationFailure
-            nil # no jobs available
-          end
+          # Return result as a MongoMapper document.
+          # When MongoMapper starts supporting findAndModify, this extra step should no longer be necessary.
+          self.find(result["_id"]) unless result.nil?
         end
 
         # When a worker is exiting, make sure we don't have any locked jobs.
